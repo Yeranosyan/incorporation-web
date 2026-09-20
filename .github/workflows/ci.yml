@@ -37,3 +37,6 @@ jobs:
 
       - name: Build
         run: npm run build
+
+      - name: Check the committed function bundle is current
+        run: git diff --exit-code -- api/contact.js
