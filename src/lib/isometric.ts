@@ -1,0 +1,64 @@
+export type Point = [x: number, y: number, z?: number];
+export type Vec2 = [x: number, y: number];
+export type Box = { x: number; y: number; w: number; d: number; h?: number };
+export type BoxFaces = { base: Point[]; left: Point[]; right: Point[]; top: Point[] };
+export type Bounds = { minX: number; minY: number; width: number; height: number };
+
+const COS_30 = Math.cos(Math.PI / 6);
+
+const round = (value: number) => Math.round(value * 100) / 100;
+
+export const project = ([x, y, z = 0]: Point): Vec2 => [round((x - y) * COS_30), round((x + y) / 2 - z)];
+
+export const expandBox = <T extends Box>({ x, y, w, d, ...rest }: T, margin: number) => ({
+  ...rest,
+  x: x - margin,
+  y: y - margin,
+  w: w + margin * 2,
+  d: d + margin * 2,
+});
+
+export const boxFaces = ({ x, y, w, d, h = 0 }: Box): BoxFaces => ({
+  base: [
+    [x, y, 0],
+    [x + w, y, 0],
+    [x + w, y + d, 0],
+    [x, y + d, 0],
+  ],
+  left: [
+    [x, y + d, 0],
+    [x + w, y + d, 0],
+    [x + w, y + d, h],
+    [x, y + d, h],
+  ],
+  right: [
+    [x + w, y, 0],
+    [x + w, y + d, 0],
+    [x + w, y + d, h],
+    [x + w, y, h],
+  ],
+  top: [
+    [x, y, h],
+    [x + w, y, h],
+    [x + w, y + d, h],
+    [x, y + d, h],
+  ],
+});
+
+export const toPath = (points: Point[]) => `M${points.map((point) => project(point).join(" ")).join("L")}Z`;
+
+export const depthOf = ({ x, y, w, d }: Box) => x + y + (w + d) / 2;
+
+export const boundsOf = (points: Point[], padding = 0): Bounds => {
+  const projected = points.map(project);
+  const xs = projected.map(([x]) => x);
+  const ys = projected.map(([, y]) => y);
+  const minX = Math.min(...xs) - padding;
+  const minY = Math.min(...ys) - padding;
+  return {
+    minX,
+    minY,
+    width: Math.max(...xs) + padding - minX,
+    height: Math.max(...ys) + padding - minY,
+  };
+};
