@@ -7,18 +7,36 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
+# Dependencies and build output
+node_modules/
+dist/
+dist-ssr/
+coverage/
 *.local
 
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
-.DS_Store
+# Secrets — never commit real env files or keys
+.env
+.env.*
+!.env.example
+*.pem
+.vercel/
+
+# Editors
+.vscode/
+.idea/
+.hintrc
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+
+# AI agent tooling
+.claude/
+.agents/
+skills-lock.json
+CLAUDE.local.md
+
+# OS
+.DS_Store
+Thumbs.db
