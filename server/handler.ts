@@ -1,5 +1,5 @@
 import process from "node:process";
-import { handleContactRequest, readContactConfig } from "../server/contact.ts";
+import { handleContactRequest, readContactConfig } from "./contact.ts";
 
 type ContactRequest = { method?: string; body?: unknown };
 type ContactResponse = {
